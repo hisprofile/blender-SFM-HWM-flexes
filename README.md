@@ -30,3 +30,6 @@ If your model uses a second qc file for it's HWM flex data, like Alaxe's HWM Ske
 # You should be good to go!
 Feel free to ask any questions you have, or an issue regarding the support of a file.
 If you join my discord server, I'll be quicker to respond regarding any question you'll have.
+
+# TO-DO
+Tweak the vta separator. Vertices in the middle are moved with the right side of the face, because if moved with both, the shape key will be applied twice in the middle. I want to make it so that each sides moves it half the distance, but I don't know if I can do this yet. I won't give up though.
