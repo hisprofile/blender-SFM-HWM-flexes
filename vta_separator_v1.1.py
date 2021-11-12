@@ -1,5 +1,8 @@
+"""
+hisprofile @ github
+"""
 ##### VTA TABBER/OPTIMIZER #####
-vta1 = r"PUT VTA DIRECTORY HERE (KEEP QUOTATION MARKS)"
+vta1 = r"H:\Games\steamapps\common\SourceFilmmaker\game\tf_movies\models\player\hwm\demo\demo_01.vta"
 vtatab = vta1[:-4] + "_tab.vta"
 vta = open(vta1, "r")
 vta_tabbed = open(vtatab, "w+")
@@ -27,12 +30,14 @@ a = open(vtatab, "r")
 liness = a.readlines()
 a.close()
 f = open(vtatab, "r")
-new = open(vta1, "w+")
+new = open(vta1 + "baaalls.vta", "w+")
 end = 0
 n = 0
 m = 0
 c = 0
 var5 = 0
+switch = True
+loccompare = {}
 breaking = 0
 for line in f:
     c += 1
@@ -79,6 +84,7 @@ for line in f:
                 m += 1
                 continue
             if "  " in liness[m] and not "+" in liness[m]:
+                print(frame_list[var5])
                 new.write(frame_list[var5])
                 frame_placeholder = m
                 var5 += 1
@@ -90,17 +96,20 @@ for line in f:
                             m += 1
                             break
                     except:
-                        print(liness[m])
                         new.write("end")
                         f.close()
                         new.close()
                         breaking = 1
                         break
+                    nullcheck = liness[m][1:-1].split(" ")
+                    if float(nullcheck[1]) == float(0.0) and switch == True:
+                        xd = {nullcheck[0] : f"{nullcheck[1]} {nullcheck[2]} {nullcheck[3]} {nullcheck[4]} {nullcheck[5]} {nullcheck[6]}"}
+                        loccompare.update(xd)
                     new.write(liness[m])
                     m += 1
                     continue
+                switch = False
             if "  " in liness[m] and "+" in liness[m]:
-                #print("true!")
                 for i in range(2):
                     new.write(frame_list[var5])
                     var5 += 1
@@ -115,17 +124,17 @@ for line in f:
                             breaking = 1
                             break
                         vertex_list = liness[m][1:].split(" ")
+                        vl = vertex_list
                         if float(vertex_list[1]) > float(0.0):
                             new.write(liness[m])
                             m += 1
                             continue
-                        #if float(vertex_list[1]) == float(0.0):
-                            #new.write("\t" + vertex_list[0] + " " + vertex_list[1] + " " + str(float(vertex_list[2])/1) + " " +str(float(vertex_list[3])/1) + " " + str(float(vertex_list[4])/8) + " " + str(float(vertex_list[5])/8) + " " + str(float(vertex_list[6])/8) + "\n")
-                            #print(vertex_list)
-                            #time.sleep(0.05)
-                            #m += 1
-                            #continue
-                        #x = input()
+                        if float(vertex_list[1]) == float(0.0):
+                            y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
+                            z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
+                            new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                            m += 1
+                            continue
                         m += 1
                     new.write(frame_list[var5])
                     var5 += 1
@@ -138,13 +147,16 @@ for line in f:
                         except:
                             pass
                         vertex_list = liness[m][1:].split(" ")
+                        vl = vertex_list
                         try:
                             if float(vertex_list[1]) < float(0.0):
                                 new.write(liness[m])
                                 m += 1
                                 continue
                             if float(vertex_list[1]) == float(0.0):
-                                new.write("\t" + vertex_list[0] + " " + vertex_list[1] + " " + str(float(vertex_list[2])/1) + " " +str(float(vertex_list[3])/1) + " " + str(float(vertex_list[4])/8) + " " + str(float(vertex_list[5])/8) + " " + str(float(vertex_list[6])/8) + "\n")
+                                y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
+                                z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
+                                new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
                                 m += 1
                                 continue
                         except:
