@@ -102,7 +102,7 @@ for line in f:
                         breaking = 1
                         break
                     nullcheck = liness[m][1:-1].split(" ")
-                    if float(nullcheck[1]) == float(0.0) or float(nullcheck[1]) < float(0.001) and switch == True:
+                    if (float(nullcheck[1]) == float(0.0) or float(nullcheck[1]) < float(0.01) or float(nullcheck[1]) > float(-0.01)) == True and switch == True:
                         xd = {nullcheck[0] : f"{nullcheck[1]} {nullcheck[2]} {nullcheck[3]} {nullcheck[4]} {nullcheck[5]} {nullcheck[6]}"}
                         loccompare.update(xd)
                     new.write(liness[m])
@@ -125,11 +125,11 @@ for line in f:
                             break
                         vertex_list = liness[m][1:].split(" ")
                         vl = vertex_list
-                        if float(vertex_list[1]) > float(0.0):
+                        if float(vertex_list[1]) > float(0.01):
                             new.write(liness[m])
                             m += 1
                             continue
-                        if float(vertex_list[1]) == float(0.0):
+                        if float(vertex_list[1]) == float(0.0) or (float(vl[1]) >= float(-0.01) and float(vl[1]) <= float(0.01)):
                             y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
                             z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
                             new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
@@ -149,11 +149,11 @@ for line in f:
                         vertex_list = liness[m][1:].split(" ")
                         vl = vertex_list
                         try:
-                            if float(vertex_list[1]) < float(0.0):
+                            if float(vertex_list[1]) < float(-0.01):
                                 new.write(liness[m])
                                 m += 1
                                 continue
-                            if float(vertex_list[1]) == float(0.0):
+                            if float(vertex_list[1]) == float(0.0) or (float(vl[1]) >= float(-0.01) and float(vl[1]) <= float(0.01)):
                                 y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
                                 z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
                                 new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
