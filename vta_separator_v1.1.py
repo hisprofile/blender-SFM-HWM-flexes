@@ -2,7 +2,7 @@
 hisprofile @ github
 """
 ##### VTA TABBER/OPTIMIZER #####
-vta1 = r"H:\Games\steamapps\common\SourceFilmmaker\game\tf_movies\models\player\hwm\demo\demo_01.vta"
+vta1 = r"PUT VTA FILE DIRECTORY HERE (KEEP QUOTATION MARKS)"
 vtatab = vta1[:-4] + "_tab.vta"
 vta = open(vta1, "r")
 vta_tabbed = open(vtatab, "w+")
@@ -30,7 +30,7 @@ a = open(vtatab, "r")
 liness = a.readlines()
 a.close()
 f = open(vtatab, "r")
-new = open(vta1 + "baaalls.vta", "w+")
+new = open(vta1, "w+")
 end = 0
 n = 0
 m = 0
