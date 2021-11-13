@@ -102,7 +102,7 @@ for line in f:
                         breaking = 1
                         break
                     nullcheck = liness[m][1:-1].split(" ")
-                    if float(nullcheck[1]) == float(0.0) and switch == True:
+                    if float(nullcheck[1]) == float(0.0) or float(nullcheck[1]) < float(0.001) and switch == True:
                         xd = {nullcheck[0] : f"{nullcheck[1]} {nullcheck[2]} {nullcheck[3]} {nullcheck[4]} {nullcheck[5]} {nullcheck[6]}"}
                         loccompare.update(xd)
                     new.write(liness[m])
