@@ -84,7 +84,6 @@ for line in f:
                 m += 1
                 continue
             if "  " in liness[m] and not "+" in liness[m]:
-                print(frame_list[var5])
                 new.write(frame_list[var5])
                 frame_placeholder = m
                 var5 += 1
@@ -102,7 +101,7 @@ for line in f:
                         breaking = 1
                         break
                     nullcheck = liness[m][1:-1].split(" ")
-                    if (float(nullcheck[1]) == float(0.0) or float(nullcheck[1]) < float(0.01) or float(nullcheck[1]) > float(-0.01)) == True and switch == True:
+                    if (float(nullcheck[1]) >= float(-0.01) and float(nullcheck[1]) <= float(0.01)) and switch == True:
                         xd = {nullcheck[0] : f"{nullcheck[1]} {nullcheck[2]} {nullcheck[3]} {nullcheck[4]} {nullcheck[5]} {nullcheck[6]}"}
                         loccompare.update(xd)
                     new.write(liness[m])
@@ -125,14 +124,14 @@ for line in f:
                             break
                         vertex_list = liness[m][1:].split(" ")
                         vl = vertex_list
-                        if float(vertex_list[1]) > float(0.01):
-                            new.write(liness[m])
-                            m += 1
-                            continue
-                        if float(vertex_list[1]) == float(0.0) or (float(vl[1]) >= float(-0.01) and float(vl[1]) <= float(0.01)):
+                        if vl[0] in loccompare:
                             y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
                             z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
-                            new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                            new.write(f"\t{vl[0]} 0.000000 {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                            m += 1
+                            continue
+                        if float(vertex_list[1]) > float(0.01):
+                            new.write(liness[m])
                             m += 1
                             continue
                         m += 1
@@ -149,14 +148,14 @@ for line in f:
                         vertex_list = liness[m][1:].split(" ")
                         vl = vertex_list
                         try:
-                            if float(vertex_list[1]) < float(-0.01):
-                                new.write(liness[m])
-                                m += 1
-                                continue
-                            if float(vertex_list[1]) == float(0.0) or (float(vl[1]) >= float(-0.01) and float(vl[1]) <= float(0.01)):
+                            if vl[0] in loccompare:
                                 y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
                                 z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
-                                new.write(f"\t{vl[0]} {vl[1]} {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                                new.write(f"\t{vl[0]} 0.000000 {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                                m += 1
+                                continue
+                            if float(vertex_list[1]) < float(-0.01):
+                                new.write(liness[m])
                                 m += 1
                                 continue
                         except:
