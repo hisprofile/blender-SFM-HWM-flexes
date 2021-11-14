@@ -10,9 +10,14 @@ context = bpy.context
 obj = context.object
 import time
 ##### FILE INPUTS #####
-qcfile = r"PUT QC FILE DIRECTORY HERE (PUT QUOTATION MARKS HERE)"
-mdbloq = "PUT MESH DATA BLOCK NAME HERE"
-kbloq = "PUT KEY BLOCK NAME HERE"
+qcfile = r"PUT QC FILE DIRECTORY HERE (KEEP QUOTATION MARKS)"
+
+'''READ THIS: I have removed the need of manually typing in
+the names of the mesh-data block and the key block.
+It is now automatically retrieved.'''
+
+mdbloq = obj.data.name
+kbloq = obj.data.shape_keys.name
 
 qcfile2 = r"PUT 2ND QC FILE DIRECTORY HERE (KEEP QUOTATION MARKS)"
 #PUT THIS TO 1 IF USING A 2ND QC FILE
@@ -30,7 +35,7 @@ extra_sliders = open(qcfile[:qcfile.rfind(r"\""[:-1])] + r"\""[:-1] + f"extra_{q
 if not obj.data.get('_RNA_UI'):
     obj.data['_RNA_UI'] = {}
 propin = []
-propident = 0
+propident = 1
 sortprop = {}
 crntline = []
 enabled = 0
@@ -47,7 +52,7 @@ breaking = 0
 counter = 0
 normalline = ""
 switch = 0
-robottwat = 288
+robottwat = 0
 switch2 = 0
 act_key = bpy.context.object
 act_key.active_shape_key_index = 1
@@ -57,6 +62,11 @@ percent = 0
 sk_list = []
 sk_NF = []
 sk_NF_ind = []
+progress = 0
+checker = []
+flexfile = 0
+skipper = []
+whyalaxe = []
 qc = open(qcfile, "r")
 global rrline
 rrline = []
@@ -71,6 +81,11 @@ for line in qc:
         try:
             float(crntline[3])
         except:
+            qqfind = line.find('"') + 1
+            qqrfind = line.rfind('"')
+            why = line[qqfind:qqrfind]
+            if why not in whyalaxe:
+                whyalaxe.append(why)
             rrline = []
             normalline = ""
             for a in crntline:
@@ -101,21 +116,28 @@ for line in qc:
                     normalline += "_" + str(a)
                     continue
             crntline = normalline.split(" ")
-
         if switch3 == 1:
             line = normalline
         qfind = line.find('"')
         qrfind = line.rfind('"') + 1
         propname = line[qfind + 1:qrfind - 1]
-        try:
-            bba = str(propident)
-            fdig = int(bba[0])
-            sdig = int(bba[1])
-            bba = int(bba)
-            xd = {f'{propname}': f'{alpha[fdig]}{alpha[sdig]}_{propname}'}
-        except:
-            bba = int(bba)
-            xd = {f'{propname}': f'a{alpha[bba]}_{propname}'}
+        if "-" in propname:
+            whyalaxe.append(propname)
+            propname = propname.replace("-", "_")
+        if not propname in checker:
+            checker.append(propname)
+        else:
+            continue
+        bba = str(propident/1000)[2:]
+        if len(bba) < 3:
+            if len(bba) == 2:
+                bba += "0"
+            if len(bba) == 1:
+                bba += "00"
+        f = alpha[int(bba[0])]
+        s = alpha[int(bba[1])]
+        t = alpha[int(bba[2])]
+        xd = {f'{propname}': f'{f}{s}{t}_{propname}'}
         sortprop.update(xd)
         properties.append(propname)
         if expfix == 0:
@@ -130,6 +152,7 @@ for line in qc:
                     }
         propident += 1
 qc.close()
+flexfile = 0
 if secqc == 1:
     qc = open(qcfile2, "r")
     for line in qc:
@@ -147,6 +170,11 @@ if secqc == 1:
                 try:
                     float(crntline[3])
                 except:
+                    qqfind = line.find('"') + 1
+                    qqrfind = line.rfind('"')
+                    why = line[qqfind:qqrfind]
+                    if why not in whyalaxe:
+                        whyalaxe.append(why)
                     rrline = []
                     normalline = ""
                     for a in crntline:
@@ -179,15 +207,23 @@ if secqc == 1:
                     crntline = normalline.split(" ")
                 if breaking == 1:
                     continue
-                try:
-                    bba = str(propident)
-                    fdig = int(bba[0])
-                    sdig = int(bba[1])
-                    bba = int(bba)
-                    xd = {f'{propname}': f'{alpha[fdig]}{alpha[sdig]}_{propname}'}
-                except:
-                    bba = int(bba)
-                    xd = {f'{propname}': f'a{alpha[bba]}_{propname}'}
+                if "-" in propname:
+                    whyalaxe.append(propname)
+                    propname = propname.replace("-", "_")
+                if not propname in checker:
+                    checker.append(propname)
+                else:
+                    continue
+                bba = str(propident/1000)[2:]
+                if len(bba) < 3:
+                    if len(bba) == 2:
+                        bba += "0"
+                    if len(bba) == 1:
+                        bba += "00"
+                f = alpha[int(bba[0])]
+                s = alpha[int(bba[1])]
+                t = alpha[int(bba[2])]
+                xd = {f'{propname}': f'{f}{s}{t}_{propname}'}
                 sortprop.update(xd)
                 properties.append(propname)
                 if expfix == 0:
@@ -218,10 +254,29 @@ for i in skey_range:
         line = line.replace("\t","").replace("\n", "")
         rline = line
         if line.startswith("%"):
+            """for i in whyalaxe:
+                if i in line:
+                    line = line.replace(i, i.replace(" ", "_"))"""
             percent = 1
+            for i in whyalaxe:
+                if i in line:
+                    rlinetemp = rline[:rline.find("=")]
+                    linetemp = line[:line.find("=")]
+                    rlinetemp2 = rline[rline.find("="):]
+                    linetemp2 = line[line.find("="):]
+                    if "-" in i:
+                        linetemp2 = linetemp2.replace(i, i.replace("-", "_"))
+                        rlinetemp2 = rlinetemp2.replace(i, i.replace("-", "_"))
+                    else:
+                        linetemp2 = linetemp2.replace(i, i.replace(" ", "_"))
+                        rlinetemp2 = rlinetemp2.replace(i, i.replace(" ", "_"))
+                    line = linetemp + linetemp2
+                    rline = rlinetemp + rlinetemp2
             line_split = line.replace("%", "")
             line_split = line_split.split(" ")
             if line_split[0] == bpy.context.object.active_shape_key.name:
+                if secqc == 1:
+                    skipper.append(line_split[0])
                 if bpy.context.object.active_shape_key.name not in sk_list:
                     sk_list.append(bpy.context.object.active_shape_key.name)
                 for a in properties:
@@ -253,7 +308,7 @@ for i in skey_range:
                 for i in properties:
                     if i in lineexp:
                         lineexp = lineexp.replace(f'{i}',f'{sortprop[i]}')
-                if len(lineexp) > 256:
+                if len(lineexp) >= 256:
                     efunca = ""
                     dexp = ""
                     luca = 1
@@ -277,9 +332,9 @@ for i in skey_range:
                         luca += 1
                     dexp = dexp[:-2]
                     efunca = efunca[:-2]
-                    exec(f"def longexp{robottwat}({efunca}):\n\treturn {expfunc}")
-                    exec(f'bpy.app.driver_namespace["longexp{robottwat}"] = longexp{robottwat}')
-                    bpy.context.object.active_shape_key.driver_add("value").driver.expression = f'longexp{robottwat}({dexp})'
+                    exec(f"def {mdbloq[:4]}exp{robottwat}({efunca}):\n\treturn {expfunc}")
+                    exec(f'bpy.app.driver_namespace["{mdbloq[:4]}exp{robottwat}"] = {mdbloq[:4]}exp{robottwat}')
+                    bpy.context.object.active_shape_key.driver_add("value").driver.expression = f'{mdbloq[:4]}exp{robottwat}({dexp})'
                     robottwat += 1
                     break
                 else:
@@ -303,8 +358,15 @@ for i in skey_range:
             qc.close()
             qc
             break
+    if progress == 7:
+        print(str((act_key.active_shape_key_index / len(bpy.data.shape_keys[kbloq].key_blocks))*100)[:4] + "% done with first QC file")
+        progress = 0
+        act_key.active_shape_key_index += 1
+        continue
+    progress += 1
     act_key.active_shape_key_index += 1
 qc.close()
+print("Finished parsing first QC file!")
 if secqc == 1:
     drivvar = 0
     name = qcfile2.rfind(r"\""[:-1]) + 1
@@ -349,9 +411,23 @@ if secqc == 1:
             rline = line
             if line.startswith("%"):
                 percent = 1
+                for i in whyalaxe:
+                    if i in line:
+                        rlinetemp = rline[:rline.find("=")]
+                        linetemp = line[:line.find("=")]
+                        rlinetemp2 = rline[rline.find("="):]
+                        linetemp2 = line[line.find("="):]
+                        if "-" in i:
+                            linetemp2 = linetemp2.replace(i, i.replace("-", "_"))
+                            rlinetemp2 = rlinetemp2.replace(i, i.replace("-", "_"))
+                        else:
+                            linetemp2 = linetemp2.replace(i, i.replace(" ", "_"))
+                            rlinetemp2 = rlinetemp2.replace(i, i.replace(" ", "_"))
+                        line = linetemp + linetemp2
+                        rline = rlinetemp + rlinetemp2
                 line_split = line.replace("%", "")
                 line_split = line_split.split(" ")
-                if line_split[0] == bpy.context.object.active_shape_key.name:
+                if line_split[0] == bpy.context.object.active_shape_key.name and not line_split[0] in skipper:
                     if bpy.context.object.active_shape_key.name:
                         sk_list.append(bpy.context.object.active_shape_key.name)
                     for a in properties:
@@ -383,7 +459,7 @@ if secqc == 1:
                     for i in properties:
                         if i in lineexp:
                             lineexp = lineexp.replace(f'{i}',f'{sortprop[i]}')
-                    if len(lineexp) > 256:
+                    if len(lineexp) >= 256:
                         efunca = ""
                         dexp = ""
                         luca = 1
@@ -407,9 +483,9 @@ if secqc == 1:
                             luca += 1
                         dexp = dexp[:-2]
                         efunca = efunca[:-2]
-                        exec(f"def longexp{robottwat}({efunca}):\n\treturn {expfunc}")
-                        exec(f'bpy.app.driver_namespace["longexp{robottwat}"] = longexp{robottwat}')
-                        bpy.context.object.active_shape_key.driver_add("value").driver.expression = f'longexp{robottwat}({dexp})'
+                        exec(f"def {mdbloq[:4]}exp{robottwat}({efunca}):\n\treturn {expfunc}")
+                        exec(f'bpy.app.driver_namespace["{mdbloq[:4]}exp{robottwat}"] = {mdbloq[:4]}exp{robottwat}')
+                        bpy.context.object.active_shape_key.driver_add("value").driver.expression = f'{mdbloq[:4]}exp{robottwat}({dexp})'
                         robottwat += 1
                         break
                     else:
@@ -434,9 +510,16 @@ if secqc == 1:
                 qc.close()
                 qc
                 break
+        if progress == 7:
+            print(str((act_key.active_shape_key_index / len(bpy.data.shape_keys[kbloq].key_blocks))*100)[:4] + "% done with second QC file")
+            progress = 0
+            act_key.active_shape_key_index += 1
+            continue
+        progress += 1
         act_key.active_shape_key_index += 1
     qc.close()
 extra_sliders.close()
+print("Finished parsing second QC file!")
 act_key.active_shape_key_index = 1
 counter = 0
 for i in sk_NF_ind:
