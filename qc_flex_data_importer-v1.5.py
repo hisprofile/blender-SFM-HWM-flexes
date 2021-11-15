@@ -26,7 +26,6 @@ secqc = 0
 ##### FLEX CONTROLLER RESET (DO NOT PUT TO 1 THE FIRST TIME, BUT AFTER SCRIPT HAS BEEN USED) #####
 expfix = 0
 #####
-import time
 import string
 alpha = string.ascii_lowercase
 name = qcfile.rfind(r"\""[:-1]) + 1
@@ -254,9 +253,6 @@ for i in skey_range:
         line = line.replace("\t","").replace("\n", "")
         rline = line
         if line.startswith("%"):
-            """for i in whyalaxe:
-                if i in line:
-                    line = line.replace(i, i.replace(" ", "_"))"""
             percent = 1
             for i in whyalaxe:
                 if i in line:
