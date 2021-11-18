@@ -116,7 +116,8 @@ for line in f:
                     frame_placeholder = m
                     while True:
                         try:
-                            if "  " in liness[m + 1]: 
+                            if "  " in liness[m + 1]:
+                                new.write(liness[m])
                                 m += 1
                                 break
                         except:
@@ -141,6 +142,7 @@ for line in f:
                     while True:
                         try:
                             if "  " in liness[m + 1]:
+                                new.write(liness[m])
                                 m += 1
                                 break
                         except:
