@@ -117,7 +117,18 @@ for line in f:
                     while True:
                         try:
                             if "  " in liness[m + 1]:
-                                new.write(liness[m])
+                                vertex_list = liness[m][1:].split(" ")
+                                vl = vertex_list
+                                if vl[0] in loccompare:
+                                    y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
+                                    z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
+                                    new.write(f"\t{vl[0]} 0.000000 {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                                    m += 1
+                                    break
+                                if float(vertex_list[1]) > float(0.01):
+                                    new.write(liness[m])
+                                    m += 1
+                                    break
                                 m += 1
                                 break
                         except:
@@ -142,7 +153,18 @@ for line in f:
                     while True:
                         try:
                             if "  " in liness[m + 1]:
-                                new.write(liness[m])
+                                vertex_list = liness[m][1:].split(" ")
+                                vl = vertex_list
+                                if vl[0] in loccompare:
+                                    y = float(vl[2]) + ((float(loccompare[vl[0]].split(" ")[1]) - float(vl[2]))/2)
+                                    z = float(vl[3]) + ((float(loccompare[vl[0]].split(" ")[2]) - float(vl[3]))/2)
+                                    new.write(f"\t{vl[0]} 0.000000 {y} {z} {vl[4]} {vl[5]} {vl[6]}")
+                                    m += 1
+                                    break
+                                if float(vertex_list[1]) < float(-0.01):
+                                    new.write(liness[m])
+                                    m += 1
+                                    break
                                 m += 1
                                 break
                         except:
