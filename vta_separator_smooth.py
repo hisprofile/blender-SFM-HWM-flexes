@@ -27,7 +27,7 @@ a = open(vtatab, "r")
 liness = a.readlines()
 a.close()
 f = open(vtatab, "r")
-new = open(vta1 + "beta2.vta", "w+")
+new = open(vta1, "w+")
 end = 0
 n = 0
 m = 0
