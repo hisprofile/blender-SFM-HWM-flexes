@@ -30,7 +30,7 @@ import string
 alpha = string.ascii_lowercase
 name = qcfile.rfind(r"\""[:-1]) + 1
 name_end = qcfile.rfind(".")
-extra_sliders = open(qcfile[:qcfile.rfind(r"\""[:-1])] + r"\""[:-1] + f"extra_{qcfile[name:name_end]}_expressions.txt", "w+")
+#extra_sliders = open(qcfile[:qcfile.rfind(r"\""[:-1])] + r"\""[:-1] + f"extra_{qcfile[name:name_end]}_expressions.txt", "w+")
 if not obj.data.get('_RNA_UI'):
     obj.data['_RNA_UI'] = {}
 propin = []
@@ -518,7 +518,7 @@ if secqc == 1:
         progress += 1
         act_key.active_shape_key_index += 1
     qc.close()
-extra_sliders.close()
+#extra_sliders.close()
 print("Finished parsing second QC file!")
 act_key.active_shape_key_index = 1
 counter = 0
